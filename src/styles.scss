@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+// Default Variables
+:root {
+  --background-image: url('./assets/images/dark-background.jpg');
+  --text-color: rgba(255, 255, 255, 0.7);
+  --text-color-active: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --border-active: 1px solid rgba(255, 255, 255, 0.4);
+  --background-active: rgba(255, 255, 255, 0.2);
+  --hover-active: rgba(255, 255, 255, 0.3);
+}
+
+// Light Theme Variables
+[data-theme="light"] {
+  --background-image: url('./assets/images/light-background.jpg');
+  --text-color: rgba(0, 0, 0, 0.6);
+  --text-color-active: #0f172a;
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --border-active: 1px solid rgba(0, 0, 0, 0.2);
+  --background-active: rgba(0, 0, 0, 0.08);
+  --hover-active: rgba(0, 0, 0, 0.15);
+}

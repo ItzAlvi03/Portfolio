@@ -1,0 +1,105 @@
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  .main {
+    width: 100%;
+    max-width: 1400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 40px 40px 40px;
+
+    .nav-central {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: 9999px;
+
+      .item {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 400;
+        padding: 6px 18px;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          color: var(--text-color-active);
+        }
+
+        &.active {
+          color: var(--text-color-active);
+          background: var(--background-active);
+          border: var(--border-active);
+          box-shadow: 0px 0px 10px 2px var(--hover-active);
+        }
+      }
+    }
+
+    .nav-buttons {
+      position: absolute;
+      right: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .theme-toggle {
+        width: 76px;
+        height: 38px;
+        border-radius: 9999px;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        .icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          transform: translateX(0);
+          background: var(--background-active);
+          border: var(--border-active);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-color-active);
+          box-shadow: 0px 0px 5px 1px var(--hover-active);
+          transition: all 0.35s ease-in-out;
+          &:hover {
+            background: var(--hover-active);
+          }
+          &.right {
+            transform: translateX(38px);
+          }
+        }
+      }
+
+      .lang-btn {
+        padding: 6px 18px;
+        border-radius: 9999px;
+        color: var(--text-color);
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+
+        &:hover {
+          background: var(--glass-border);
+          color: var(--text-color-active);
+        }
+      }
+    }
+  }
+}
