@@ -19,12 +19,28 @@ header {
     padding: 30px 40px 40px 40px;
 
     .nav-central {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 4px;
       padding: 4px 6px;
       border-radius: 9999px;
 
+      .active-glass {
+        position: absolute;
+        left: 0;
+        width: var(--active-glass-width);
+        height: 36px;
+        transform: translateX(var(--active-glass-left));
+        color: var(--text-color-active);
+        background: var(--background-active);
+        border: var(--border-active);
+        border-radius: 9999px;
+        box-shadow: 0px 0px 10px 2px var(--hover-active);
+        &.transition {
+          transition: all 0.3s ease;
+        }
+      }
       .item {
         color: var(--text-color);
         text-decoration: none;
@@ -33,16 +49,13 @@ header {
         padding: 6px 18px;
         border-radius: 9999px;
         transition: all 0.3s ease;
+        cursor: pointer;
 
         &:hover {
           color: var(--text-color-active);
         }
-
         &.active {
           color: var(--text-color-active);
-          background: var(--background-active);
-          border: var(--border-active);
-          box-shadow: 0px 0px 10px 2px var(--hover-active);
         }
       }
     }

@@ -1,11 +1,12 @@
 <header>
   <div class="main">
-    <nav class="nav-central glass-panel">
-      <a href="#" class="item active">Inicio</a>
-      <a href="#" class="item">Experiencia</a>
-      <a href="#" class="item">Conocimientos</a>
-      <a href="#" class="item">Setup</a>
-      <a href="#" class="item">Contacto</a>
+    <nav class="nav-central glass-panel" #navContainer>
+      <div class="active-glass"></div>
+      <a routerLink="/home" class="item" (click)="setActive($event)">Inicio</a>
+      <a routerLink="/experience" class="item" (click)="setActive($event)">Experiencia</a>
+      <a routerLink="/skills" class="item" (click)="setActive($event)">Conocimientos</a>
+      <a routerLink="/setup" class="item" (click)="setActive($event)">Setup</a>
+      <a routerLink="/contact" class="item" (click)="setActive($event)">Contacto</a>
     </nav>
     <div class="nav-buttons">
       <button class="theme-toggle glass-panel" (click)="toggleTheme()">
