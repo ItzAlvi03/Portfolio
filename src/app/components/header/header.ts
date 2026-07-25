@@ -12,6 +12,7 @@ import { filter } from 'rxjs/internal/operators/filter';
 export class Header implements OnInit {
   private router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private activeGlassTransition: boolean = false; // Activate the transition effect after the first navigation
 
   @ViewChild('navContainer') navContainer!: ElementRef<HTMLElement>;
 
@@ -25,16 +26,22 @@ export class Header implements OnInit {
 
     // Init glass position based on the current route
     this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        take(1),
-      )
-      .subscribe((event: NavigationEnd) => this.initGlassPosition(event.urlAfterRedirects));
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => this.changeGlassPosition(event.urlAfterRedirects));
   }
 
-  initGlassPosition(url: string) {
+  changeGlassPosition(url: string) {
     const item = this.selectTargetItem(url);
+    // Update the position of the active glass
     this.updateGlassPosition(item);
+    if (!this.activeGlassTransition) {
+      this.activeGlassTransition = true;
+      // Add a transition class to the active glass for smooth animation
+      const activeGlass = this.navContainer?.nativeElement?.querySelector(
+        '.active-glass',
+      ) as HTMLElement;
+      activeGlass?.classList?.add('transition');
+    }
   }
 
   selectTargetItem(url: string): HTMLElement {
@@ -53,33 +60,25 @@ export class Header implements OnInit {
         position = 4;
         break;
     }
-    const element = this.navContainer.nativeElement.querySelectorAll('.item')[position];
-    element.classList.add('active');
+
+    // Remove current active class from the previously active item
+    const currentActive = this.navContainer?.nativeElement?.querySelector('.item.active');
+    if (currentActive) currentActive.classList.remove('active');
+    // Add active class to the new item selected
+    const element = this.navContainer?.nativeElement?.querySelectorAll('.item')[position];
+    element?.classList.add('active');
+
     return element as HTMLElement;
   }
 
-  setActive(event: MouseEvent) {
-    const target = event.currentTarget as HTMLElement;
-    const currentActive = this.navContainer.nativeElement.querySelector('.item.active');
-    currentActive?.classList.remove('active');
-    target.classList.add('active');
-    // Add a transition class to the active glass for smooth animation
-    const activeGlass = this.navContainer.nativeElement.querySelector(
-      '.active-glass',
-    ) as HTMLElement;
-    activeGlass.classList.add('transition');
-    // Update the position of the active glass
-    this.updateGlassPosition(target);
-  }
-
   updateGlassPosition(itemActive: HTMLElement) {
-    this.navContainer.nativeElement.style.setProperty(
+    this.navContainer?.nativeElement?.style.setProperty(
       '--active-glass-left',
-      `${itemActive.offsetLeft}px`,
+      `${itemActive?.offsetLeft}px`,
     );
-    this.navContainer.nativeElement.style.setProperty(
+    this.navContainer?.nativeElement?.style.setProperty(
       '--active-glass-width',
-      `${itemActive.offsetWidth}px`,
+      `${itemActive?.offsetWidth}px`,
     );
     this.cdr.detectChanges();
   }
