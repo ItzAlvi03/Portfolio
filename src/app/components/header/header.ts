@@ -1,18 +1,21 @@
 import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { take } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { delay, skip } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class Header implements OnInit {
   private router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private translate = inject(TranslateService);
   private activeGlassTransition: boolean = false; // Activate the transition effect after the first navigation
+  private currentUrl: string = '';
 
   @ViewChild('navContainer') navContainer!: ElementRef<HTMLElement>;
 
@@ -24,13 +27,23 @@ export class Header implements OnInit {
     this.currentTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', this.currentTheme);
 
+    // Set current language
+    const currentLang = this.translate.getCurrentLang() || 'es-ES';
+    this.currentShortLang = currentLang?.split('-')[0] || 'es';
+
     // Init glass position based on the current route
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => this.changeGlassPosition(event.urlAfterRedirects));
+
+    // Subscribe to lang changes
+    this.translate.onLangChange
+      .pipe(delay(50))
+      .subscribe(() => this.changeGlassPosition(this.currentUrl));
   }
 
   changeGlassPosition(url: string) {
+    this.currentUrl = url;
     const item = this.selectTargetItem(url);
     // Update the position of the active glass
     this.updateGlassPosition(item);
@@ -89,5 +102,12 @@ export class Header implements OnInit {
 
     document.documentElement.setAttribute('data-theme', this.currentTheme);
     localStorage.setItem('theme', this.currentTheme);
+  }
+
+  toggleLang() {
+    const newLang = this.currentShortLang === 'es' ? 'en-GB' : 'es-ES';
+    this.translate.use(newLang);
+    localStorage.setItem('lang', newLang);
+    this.currentShortLang = newLang.split('-')[0];
   }
 }
