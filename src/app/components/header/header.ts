@@ -14,13 +14,16 @@ export class Header implements OnInit {
   private router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
-  private activeGlassTransition: boolean = false; // Activate the transition effect after the first navigation
   private currentUrl: string = '';
 
   @ViewChild('navContainer') navContainer!: ElementRef<HTMLElement>;
 
-  currentShortLang: string = 'es';
+  currentLangPosition: number = 0;
   currentTheme: string = 'dark';
+  languages: string[] = [];
+
+  glassTransition: boolean = false; // Activate the transition effect after the first navigation
+  langTransition: boolean = false; // Activate the transition effect after loading page
 
   ngOnInit() {
     // Set current theme
@@ -29,7 +32,8 @@ export class Header implements OnInit {
 
     // Set current language
     const currentLang = this.translate.getCurrentLang() || 'es-ES';
-    this.currentShortLang = currentLang?.split('-')[0] || 'es';
+    this.languages = [...this.translate.getLangs()];
+    this.currentLangPosition = this.languages.indexOf(currentLang);
 
     // Init glass position based on the current route
     this.router.events
@@ -43,18 +47,11 @@ export class Header implements OnInit {
   }
 
   changeGlassPosition(url: string) {
+    if (!this.glassTransition) this.glassTransition = true;
     this.currentUrl = url;
     const item = this.selectTargetItem(url);
     // Update the position of the active glass
     this.updateGlassPosition(item);
-    if (!this.activeGlassTransition) {
-      this.activeGlassTransition = true;
-      // Add a transition class to the active glass for smooth animation
-      const activeGlass = this.navContainer?.nativeElement?.querySelector(
-        '.active-glass',
-      ) as HTMLElement;
-      activeGlass?.classList?.add('transition');
-    }
   }
 
   selectTargetItem(url: string): HTMLElement {
@@ -105,9 +102,10 @@ export class Header implements OnInit {
   }
 
   toggleLang() {
-    const newLang = this.currentShortLang === 'es' ? 'en-GB' : 'es-ES';
+    if (!this.langTransition) this.langTransition = true;
+    this.currentLangPosition = this.currentLangPosition == 0 ? 1 : 0;
+    const newLang = this.languages[this.currentLangPosition];
     this.translate.use(newLang);
     localStorage.setItem('lang', newLang);
-    this.currentShortLang = newLang.split('-')[0];
   }
 }

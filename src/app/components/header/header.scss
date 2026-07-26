@@ -6,6 +6,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
+.transition {
+  transition: all 0.3s ease;
+}
+
 header {
   display: flex;
   justify-content: center;
@@ -37,9 +41,6 @@ header {
         border: var(--border-active);
         border-radius: 9999px;
         box-shadow: 0px 0px 10px 2px var(--hover-active);
-        &.transition {
-          transition: all 0.3s ease;
-        }
       }
       .item {
         color: var(--text-color);
@@ -69,6 +70,7 @@ header {
 
       .theme-toggle {
         width: 76px;
+        min-width: 76px;
         height: 38px;
         border-radius: 9999px;
         padding: 2px;
@@ -99,18 +101,39 @@ header {
       }
 
       .lang-btn {
+        position: relative;
+        width: 58px;
+        height: 38px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         padding: 6px 18px;
         border-radius: 9999px;
         color: var(--text-color);
         font-size: 16px;
         font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
         text-transform: uppercase;
+        overflow: hidden;
 
         &:hover {
           background: var(--glass-border);
           color: var(--text-color-active);
+        }
+
+        .languages {
+          position: absolute;
+          top: 0;
+          transform: translateY(calc((-50px * var(--language-position))));
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          align-items: center;
+          justify-content: center;
+          span {
+            height: 36px;
+            align-content: center;
+          }
         }
       }
     }

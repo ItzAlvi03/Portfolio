@@ -1,7 +1,7 @@
 <header>
   <div class="main">
     <nav class="nav-central glass-panel" #navContainer>
-      <div class="active-glass"></div>
+      <div class="active-glass" [class.transition]="glassTransition"></div>
       <a routerLink="/home" class="item">{{ 'header.home' | translate }}</a>
       <a routerLink="/experience" class="item">{{ 'header.experience' | translate }}</a>
       <a routerLink="/skills" class="item">{{ 'header.skills' | translate }}</a>
@@ -47,8 +47,17 @@
         </span>
       </button>
 
-      <button class="lang-btn glass-panel" (click)="toggleLang()">
-        {{ currentShortLang }}
+      <button
+        class="lang-btn glass-panel"
+        [style.--language-position]="currentLangPosition"
+        (click)="toggleLang()"
+      >
+        <div class="languages" [class.transition]="langTransition">
+          @for (lang of languages; track lang) {
+            <span class="lang">{{ lang.split('-')[0] }}</span>
+          }
+        </div>
+        <span></span>
       </button>
     </div>
   </div>
