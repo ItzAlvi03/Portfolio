@@ -7,7 +7,7 @@
 }
 
 .transition {
-  transition: all 0.3s ease;
+  transition: all 0.25s ease-out;
 }
 
 header {
@@ -22,6 +22,34 @@ header {
     justify-content: center;
     padding: 30px 40px 40px 40px;
 
+    @media (max-width: 993px) {
+      padding: 30px 0px 40px 0px;
+      .nav-buttons {
+        right: 10px !important;
+        gap: 8px !important;
+        .theme-toggle {
+          width: 68px !important;
+          min-width: 68px !important;
+          height: 36px !important;
+          .icon.right {
+            transform: translateX(32px) !important;
+          }
+        }
+        .lang-btn {
+          width: 52px !important;
+          height: 36px !important;
+          font-size: 12px !important;
+          .languages {
+            transform: translateY(calc(-46px * var(--language-position))) !important;
+            gap: 12px !important;
+            .lang {
+              height: 34px !important;
+            }
+          }
+        }
+      }
+    }
+
     .nav-central {
       position: relative;
       display: flex;
@@ -33,9 +61,7 @@ header {
       .active-glass {
         position: absolute;
         left: 0;
-        width: var(--active-glass-width);
         height: 36px;
-        transform: translateX(var(--active-glass-left));
         color: var(--text-color-active);
         background: var(--background-active);
         border: var(--border-active);
@@ -51,7 +77,10 @@ header {
         border-radius: 9999px;
         transition: all 0.3s ease;
         cursor: pointer;
-
+        @media (max-width: 993px) {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
         &:hover {
           color: var(--text-color-active);
         }

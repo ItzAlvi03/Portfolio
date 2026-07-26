@@ -1,7 +1,16 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { delay, skip } from 'rxjs';
+import { delay } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
 
 @Component({
@@ -10,17 +19,20 @@ import { filter } from 'rxjs/internal/operators/filter';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class Header implements OnInit {
+export class Header implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
   private currentUrl: string = '';
+  private resizeObserver!: ResizeObserver;
 
   @ViewChild('navContainer') navContainer!: ElementRef<HTMLElement>;
 
   currentLangPosition: number = 0;
   currentTheme: string = 'dark';
   languages: string[] = [];
+  // Glass position and width
+  glassLeft = signal(0);
+  glassWidth = signal(0);
 
   glassTransition: boolean = false; // Activate the transition effect after the first navigation
   langTransition: boolean = false; // Activate the transition effect after loading page
@@ -38,20 +50,27 @@ export class Header implements OnInit {
     // Init glass position based on the current route
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => this.changeGlassPosition(event.urlAfterRedirects));
-
-    // Subscribe to lang changes
-    this.translate.onLangChange
-      .pipe(delay(50))
-      .subscribe(() => this.changeGlassPosition(this.currentUrl));
+      .subscribe((event: NavigationEnd) => {
+        this.currentUrl = event.urlAfterRedirects;
+        this.changeGlassPosition();
+      });
   }
 
-  changeGlassPosition(url: string) {
-    if (!this.glassTransition) this.glassTransition = true;
-    this.currentUrl = url;
-    const item = this.selectTargetItem(url);
+  ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(() => this.changeGlassPosition());
+    this.resizeObserver.observe(this.navContainer.nativeElement);
+  }
+
+  changeGlassPosition() {
+    const item = this.selectTargetItem(this.currentUrl);
     // Update the position of the active glass
-    this.updateGlassPosition(item);
+    this.glassLeft.set(item?.offsetLeft);
+    this.glassWidth.set(item?.offsetWidth);
+    if (!this.glassTransition) {
+      setTimeout(() => {
+        this.glassTransition = true;
+      }, 10);
+    }
   }
 
   selectTargetItem(url: string): HTMLElement {
@@ -81,18 +100,6 @@ export class Header implements OnInit {
     return element as HTMLElement;
   }
 
-  updateGlassPosition(itemActive: HTMLElement) {
-    this.navContainer?.nativeElement?.style.setProperty(
-      '--active-glass-left',
-      `${itemActive?.offsetLeft}px`,
-    );
-    this.navContainer?.nativeElement?.style.setProperty(
-      '--active-glass-width',
-      `${itemActive?.offsetWidth}px`,
-    );
-    this.cdr.detectChanges();
-  }
-
   toggleTheme() {
     if (this.currentTheme === 'light') this.currentTheme = 'dark';
     else this.currentTheme = 'light';
@@ -107,5 +114,9 @@ export class Header implements OnInit {
     const newLang = this.languages[this.currentLangPosition];
     this.translate.use(newLang);
     localStorage.setItem('lang', newLang);
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
   }
 }
