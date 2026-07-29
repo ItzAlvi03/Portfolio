@@ -1,7 +1,6 @@
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
@@ -22,22 +21,32 @@ header {
     justify-content: center;
     padding: 30px 40px 40px 40px;
 
-    @media (max-width: 993px) {
+    @media (max-width: 950px) {
       padding: 30px 0px 40px 0px;
+      .nav-central {
+        padding: 4px 4px !important;
+      }
+      .active-glass {
+        height: 32px !important;
+      }
       .nav-buttons {
-        right: 10px !important;
-        gap: 8px !important;
+        right: 20px !important;
+        gap: 6px !important;
         .theme-toggle {
-          width: 68px !important;
-          min-width: 68px !important;
-          height: 36px !important;
-          .icon.right {
-            transform: translateX(32px) !important;
+          width: 60px !important;
+          min-width: 60px !important;
+          height: 34px !important;
+          .icon {
+            width: 28px !important;
+            height: 28px !important;
+            &.right {
+              transform: translateX(26px) !important;
+            }
           }
         }
         .lang-btn {
-          width: 52px !important;
-          height: 36px !important;
+          width: 46px !important;
+          height: 34px !important;
           font-size: 12px !important;
           .languages {
             transform: translateY(calc(-46px * var(--language-position))) !important;
@@ -77,9 +86,9 @@ header {
         border-radius: 9999px;
         transition: all 0.3s ease;
         cursor: pointer;
-        @media (max-width: 993px) {
+        @media (max-width: 950px) {
           font-size: 12px;
-          padding: 6px 12px;
+          padding: 6px 10px;
         }
         &:hover {
           color: var(--text-color-active);
